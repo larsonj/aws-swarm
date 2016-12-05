@@ -1,25 +1,28 @@
-#!/usr/bin/env bash
+echo ===========================================================================================
+echo docker-machine $1 create --driver amazonec2 --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID --amazonec2-zone ${AWS_ZONE[1]} --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE --amazonec2-tags "type,manager" swarm-1
+echo ===========================================================================================
 
-echo "Bash version ${BASH_VERSION}"
+echo docker-machine $1 create \
+   --driver amazonec2 \
+   --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
+   --amazonec2-zone ${AWS_ZONE[1]} \
+   --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
+   --amazonec2-tags "type,manager" \
+   swarm-1-test
 
-export AWS_DEFAULT_REGION=us-east-1
-export AWS_DEFAULT_SUBNET_ID=subnet-277b0263
-export AWS_DEFAULT_ZONE=e
-export AWS_DEFAULT_VPC_ID=vpc-95c708f3
-export AWS_DEFAULT_INSTANCE_TYPE=t2.nano
+docker-machine $1 create \
+   --driver amazonec2 \
+   --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
+   --amazonec2-zone ${AWS_ZONE[1]} \
+   --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
+   --amazonec2-tags "type,manager" \
+   swarm-1-test
 
-zonesArr=(c b c d e)
-subnetsArr=(ssubnet-4258f97e subnet-277b026 subnet-4258f97e subnet-77951b5a subnet-77951b5a)
+echo ===========================================================================================
+echo export MANAGER_IP=$(aws ec2 describe-instances --filter Name=tag:Name,Values=swarm-1 | jq -r ".Reservations[2].Instances[0].PrivateIpAddress")
+echo ===========================================================================================
 
-let "idx = 0"
-for val in "${zonesArr[@]}"
-do
-   let "idx++"
+export MANAGER_IP=$(aws ec2 describe-instances --filter Name=tag:Name,Values=swarm-1 | jq -r ".Reservations[0].Instances[0].PrivateIpAddress")
 
-   AWS_ZONE[$idx]=$val
-   echo AWS_ZONE[$idx]=$val
 
-   AWS_SUBNET[$idx]=${subnetsArr[$idx]}
-   echo AWS_SUBNET[$idx]=${subnetsArr[$idx]}
-
-done
+#   --amazonec2-subnet-id ${AWS_SUBNET[1]} \

@@ -6,7 +6,6 @@ for i in 2 3; do
       --driver amazonec2 \
       --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
       --amazonec2-zone ${AWS_ZONE[1]} \
-      --amazonec2-subnet-id subnet-277b026e \
       --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
       --amazonec2-tags "type,manager" \
    swarm-$i
@@ -29,10 +28,8 @@ WORKER_TOKEN=$(docker swarm join-token -q worker)
 for i in 4 5; do
 docker-machine create \
    --driver amazonec2 \
-   --driver amazonec2 \
    --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
    --amazonec2-zone ${AWS_ZONE[1]} \
-   --amazonec2-subnet-id subnet-277b026e \
    --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
    --amazonec2-tags "type,manager" \
 swarm-$i
