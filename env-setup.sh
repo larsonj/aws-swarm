@@ -6,7 +6,7 @@ export AWS_DEFAULT_REGION=us-east-1
 export AWS_DEFAULT_SUBNET_ID=subnet-277b0263
 export AWS_DEFAULT_ZONE=e
 export AWS_DEFAULT_VPC_ID=vpc-95c708f3
-export AWS_DEFAULT_INSTANCE_TYPE=t2.nano
+export AWS_DEFAULT_INSTANCE_TYPE=t2.micro
 
 # if there are multiple subnets per zone then you need to specify a public subnet for the dm 
 # create command. 

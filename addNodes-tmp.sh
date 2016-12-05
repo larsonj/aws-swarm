@@ -17,8 +17,6 @@ docker swarm init --advertise-addr $MANAGER_IP
 
 docker node ls
 
-# source ./rm-open-swarm-ingress-ports.sh
-
 MANAGER_TOKEN=$(docker swarm join-token -q manager)
 
 for i in 2 3; do
@@ -32,7 +30,7 @@ for i in 2 3; do
 
    IP=$(aws ec2 describe-instances \
       --filter Name=tag:Name,Values=swarm-$i \
-      | jq -r ".Reservations[0].Instances[0].PrivateIpAddress")
+      | jq -r ".Reservations[1].Instances[0].PrivateIpAddress")
    
    eval $(docker-machine env swarm-$i)
    
@@ -43,26 +41,26 @@ for i in 2 3; do
 done
 
 # create worker machines
-eval $(docker-machine env swarm-1)
 WORKER_TOKEN=$(docker swarm join-token -q worker)
 
 for i in 4 5; do
-   docker-machine create \
-      --driver amazonec2 \
-      --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
-      --amazonec2-zone ${AWS_ZONE[$i]} \
-      --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
-      --amazonec2-tags "type,worker" \
-      swarm-$i
+docker-machine create \
+   --driver amazonec2 \
+   --amazonec2-vpc-id $AWS_DEFAULT_VPC_ID \
+   --amazonec2-zone ${AWS_ZONE[$i]} \
+   --amazonec2-instance-type $AWS_DEFAULT_INSTANCE_TYPE \
+   --amazonec2-tags "type,worker" \
+   swarm-$i
 
-      IP=$(aws ec2 describe-instances \
-         --filter Name=tag:Name,Values=swarm-$i \
-         | jq -r ".Reservations[0].Instances[0].PrivateIpAddress")
+IP=$(aws ec2 describe-instances \
+   --filter Name=tag:Name,Values=swarm-$i \
+   | jq -r ".Reservations[0].Instances[0].PrivateIpAddress")
 
-      eval $(docker-machine env swarm-$i)
+eval $(docker-machine env swarm-$i)
 
-      docker swarm join \
-         --token $WORKER_TOKEN \
-         --advertise-addr $IP \
-         $MANAGER_IP:2377
+docker swarm join \
+   --token $WORKER_TOKEN \
+   --advertise-addr $IP \
+   $MANAGER_IP:2377
 done
+
