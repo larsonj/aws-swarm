@@ -3,7 +3,5 @@
 cloud-provisioning/**
 **/*.swp
 terraform/devops21.pem
-terraform/**/*.backup
-terraform/terraform.tfstate
 
 

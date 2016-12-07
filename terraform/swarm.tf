@@ -12,6 +12,7 @@ resource "aws_instance" "swarm-manager" {
   connection {
     user = "ubuntu"
     private_key = "${file("devops21.pem")}"
+   agent = "false"
   }
   provisioner "remote-exec" {
     inline = [

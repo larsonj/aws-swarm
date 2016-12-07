@@ -13,7 +13,7 @@
     },
     "instance_type": "t1.micro",
     "ssh_username": "ubuntu",
-    "ami_name": "devops21",
+    "ami_name": "dockerSwarm",
     "force_deregister": true
   }],
   "provisioners": [{
