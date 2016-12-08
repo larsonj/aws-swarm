@@ -2,6 +2,10 @@ resource "aws_instance" "swarm-manager" {
   count = "${var.swarm_managers}"
   ami = "${var.swarm_ami_id}"
   instance_type = "${var.swarm_instance_type}"
+
+  # spread managers across availability zones listed in var.az-list
+  availability_zone = "${element(var.az-list, count.index % var.az-total-count)}"
+
   tags {
     Name = "swarm-manager"
   }
@@ -11,7 +15,7 @@ resource "aws_instance" "swarm-manager" {
   key_name = "devops21"
   connection {
     user = "ubuntu"
-    private_key = "${file("devops21.pem")}"
+    private_key = "${file("~/.ssh/devops21.pem")}"
    agent = "false"
   }
   provisioner "remote-exec" {
@@ -26,6 +30,11 @@ resource "aws_instance" "swarm-worker" {
   count = "${var.swarm_workers}"
   ami = "${var.swarm_ami_id}"
   instance_type = "${var.swarm_instance_type}"
+
+  # spread workers across availability zones listed in var.az-list
+  availability_zone = "${element(var.az-list, count.index % var.az-total-count)}"
+
+
   tags {
     Name = "swarm-worker"
   }
@@ -35,7 +44,7 @@ resource "aws_instance" "swarm-worker" {
   key_name = "devops21"
   connection {
     user = "ubuntu"
-    private_key = "${file("devops21.pem")}"
+    private_key = "${file("~/.ssh/devops21.pem")}"
   }
   provisioner "remote-exec" {
     inline = [

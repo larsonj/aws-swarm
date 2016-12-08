@@ -3,5 +3,5 @@
 cloud-provisioning/**
 **/*.swp
 terraform/devops21.pem
-
+terraform/**/*.log
 

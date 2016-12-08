@@ -1,0 +1,17 @@
+# install jenkins on swarm-master-1
+
+ssh -i ~/.ssh/devops21.pem \
+   ubuntu@$(terraform output swarm_manager_1_public_ip)
+
+mkdir -p docker/jenkins
+
+# TODO: add docker storage replication to AWS EFS mount for backup and recovery
+docker service create --name jenkins \
+   -p 8082:8080 \
+   -p 50000:50000 \
+   -e JENKINS_OPTS="--prefix=/jenkins" \
+   --mount "type=bind,source=$PWD/docker/jenkins,target=/var/jenkins_home" \
+   --reserve-memory 300m \
+   jenkins:2.7.4-alpine
+
+docker service ls
